@@ -12,7 +12,7 @@ defmodule RealWorld.Web.Router do
 
     resources "/articles", ArticleController, except: [:new, :edit], param: "slug"
 
-    get "/user", UserController, :current_user
+    get "/user", UserCntroller, :current_user
     put "/user", UserController, :update
     post "/users", UserController, :create
     post "/users/login", SessionController, :create

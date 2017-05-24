@@ -18,7 +18,7 @@ defmodule RealWorld.Blog do
 
   """
   def list_articles do
-    Repo.all(Article)
+    Repo.all(Article) |> Repo.preload(:author)
   end
 
   @doc """
@@ -35,7 +35,7 @@ defmodule RealWorld.Blog do
       ** (Ecto.NoResultsError)
 
   """
-  def get_article!(id), do: Repo.get!(Article, id)
+  def get_article!(id), do: Repo.get!(Article, id) |> Repo.preload(:author)
 
 
   @doc """
@@ -52,7 +52,7 @@ defmodule RealWorld.Blog do
   ** (Ecto.NoResultsError)
 
   """
-  def get_article_by_slug!(slug), do: Repo.get_by! Article, slug: slug
+  def get_article_by_slug!(slug), do: Repo.get_by!(Article, slug: slug) |> Repo.preload(:author)
 
   @doc """
   Creates a article.
@@ -69,7 +69,8 @@ defmodule RealWorld.Blog do
   def create_article(attrs \\ %{}) do
     %Article{}
     |> article_changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert!()
+    |> Repo.preload(:author)
   end
 
   @doc """
@@ -121,9 +122,10 @@ defmodule RealWorld.Blog do
 
   defp article_changeset(%Article{} = article, attrs) do
     article
-    |> cast(attrs, [:title, :description, :body, :slug])
-    |> slugify_title()
+    |> cast(attrs, [:title, :description, :body, :slug, :user_id])
     |> validate_required([:title, :description, :body])
+    |> assoc_constraint(:author)
+    |> slugify_title()
   end
 
   defp slugify_title(changeset) do

@@ -15,6 +15,7 @@ defmodule RealWorld.Accounts.User do
     field :username, :string, unique: true
     field :bio, :string
     field :image, :string
+    has_many :articles, RealWorld.Blog.Article
 
     timestamps inserted_at: :created_at
   end

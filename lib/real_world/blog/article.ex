@@ -10,7 +10,7 @@ defmodule RealWorld.Blog.Article do
     field :description, :string
     field :title, :string
     field :slug, :string
-
+    belongs_to :author, RealWorld.Accounts.User, foreign_key: :user_id 
     timestamps inserted_at: :created_at
   end
 end
