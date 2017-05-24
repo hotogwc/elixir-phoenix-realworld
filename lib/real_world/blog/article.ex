@@ -14,3 +14,9 @@ defmodule RealWorld.Blog.Article do
     timestamps inserted_at: :created_at
   end
 end
+
+defimpl Phoenix.Param, for: RealWorld.Blog.Article do
+  def to_param(%{slug: slug}) do
+    slug
+  end
+end

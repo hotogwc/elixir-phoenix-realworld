@@ -3,6 +3,7 @@ defmodule RealWorld.Web.ArticleControllerTest do
 
   alias RealWorld.Blog
   alias RealWorld.Blog.Article
+  alias RealWorld.Repo
 
   @create_attrs %{body: "some body", description: "some description", title: "some title"}
   @update_attrs %{body: "some updated body", description: "some updated description", title: "some updated title"}
@@ -25,8 +26,8 @@ defmodule RealWorld.Web.ArticleControllerTest do
   test "creates article and renders article when data is valid", %{conn: conn} do
     conn = post conn, article_path(conn, :create), article: @create_attrs
     assert %{"id" => id} = json_response(conn, 201)["article"]
-
-    conn = get conn, article_path(conn, :show, id)
+    article = Repo.get! Article, id
+    conn = get conn, article_path(conn, :show, article.slug)
     json = json_response(conn, 200)["article"]
 
     assert json == %{
@@ -49,8 +50,8 @@ defmodule RealWorld.Web.ArticleControllerTest do
     %Article{id: id} = article = fixture(:article)
     conn = put conn, article_path(conn, :update, article), article: @update_attrs
     assert %{"id" => ^id} = json_response(conn, 200)["article"]
-
-    conn = get conn, article_path(conn, :show, id)
+    updated_article = Repo.get! Article, id
+    conn = get conn, article_path(conn, :show, updated_article.slug)
     json = json_response(conn, 200)["article"]
 
     assert json == %{

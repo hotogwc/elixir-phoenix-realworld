@@ -37,6 +37,23 @@ defmodule RealWorld.Blog do
   """
   def get_article!(id), do: Repo.get!(Article, id)
 
+
+  @doc """
+  Gets a single article with slug
+
+  Raises `Ecto.NoResultsError` if the Article does not exist.
+
+  ## Examples
+
+  iex> get_article_by_slug!(how-to-train-your-dragon)
+  %Article{}
+
+  iex> get_article_by_slug!(how-to-train-your-dragon)
+  ** (Ecto.NoResultsError)
+
+  """
+  def get_article_by_slug!(slug), do: Repo.get_by! Article, slug: slug
+
   @doc """
   Creates a article.
 
