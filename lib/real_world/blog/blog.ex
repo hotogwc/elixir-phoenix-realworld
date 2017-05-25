@@ -6,7 +6,7 @@ defmodule RealWorld.Blog do
   import Ecto.{Query, Changeset}, warn: false
   alias RealWorld.Repo
 
-  alias RealWorld.Blog.Article
+  alias RealWorld.Blog.{Article, Comment}
 
   @doc """
   Returns the list of articles.
@@ -140,5 +140,40 @@ defmodule RealWorld.Blog do
     str
     |> String.downcase()
     |> String.replace(~r/[^\w-]+/u, "-")
+  end
+
+
+  @doc """
+  Returns the list comments of given slug of an article
+
+  ## Examples
+
+  iex> list_comments_for_article_slug! "how-to-train-your-dragon"
+  [%Comment{}, ...]
+  iex> list_comments_for_article_slug! "1111"
+  ** (Ecto.NoResultsError)
+  """
+  def list_comments_for_article_slug!(slug) do
+    article = Repo.get_by!(Article, slug: slug) |> Repo.preload(:comments)
+    article.comments
+  end
+
+
+  def create_new_comments_for_article_slug(slug, attrs \\ %{}) do
+    case Repo.get_by(Article, slug: slug) do
+      article ->
+        comment =
+          article
+          |> build_assoc(:comments)
+          |> Comment.changeset(attrs)
+          |> Repo.insert!()
+          {:ok, comment}
+      nil -> {:error, :not_found}
+    end
+  end
+
+  def delete_comment(id) do
+    comment = Repo.get! Comment, id
+    Repo.delete(comment)
   end
 end

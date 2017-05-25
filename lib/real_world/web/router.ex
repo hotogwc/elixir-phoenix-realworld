@@ -10,7 +10,9 @@ defmodule RealWorld.Web.Router do
   scope "/api", RealWorld.Web do
     pipe_through :api
 
-    resources "/articles", ArticleController, except: [:new, :edit], param: "slug"
+    resources "/articles", ArticleController, except: [:new, :edit], param: "slug" do
+      resources "/comments", CommentController, only: [:create, :index, :delete]
+    end
 
     get "/user", UserCntroller, :current_user
     put "/user", UserController, :update
@@ -20,7 +22,5 @@ defmodule RealWorld.Web.Router do
     get "/profiles/:username", ProfileController, :show
     post "/profiles/:username/follow", ProfileController, :follow
     delete "/profiles/:username/follow", ProfileController, :unfollow
-
-    
   end
 end
