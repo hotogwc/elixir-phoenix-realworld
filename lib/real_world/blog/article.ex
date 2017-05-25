@@ -11,6 +11,7 @@ defmodule RealWorld.Blog.Article do
     field :title, :string
     field :slug, :string
     belongs_to :author, RealWorld.Accounts.User, foreign_key: :user_id 
+    has_many :comments, RealWorld.Blog.Comment
     timestamps inserted_at: :created_at
   end
 end
