@@ -5,6 +5,7 @@ defmodule RealWorld.Blog do
 
   import Ecto.{Query, Changeset}, warn: false
   alias RealWorld.Repo
+  import Ecto
 
   alias RealWorld.Blog.{Article, Comment}
 
