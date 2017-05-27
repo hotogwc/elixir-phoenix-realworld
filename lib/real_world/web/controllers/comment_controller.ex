@@ -21,7 +21,9 @@ defmodule RealWorld.Web.CommentController do
     render(conn, "index.json", comments: comments)
   end
 
-  def delete(conn, _, _, _) do
-    
+  def delete(conn, %{"id" => id}, _, _) do
+    with :ok <- Blog.delete_comment(id) do
+      send_resp conn, :no_content, ""
+    end
   end
 end

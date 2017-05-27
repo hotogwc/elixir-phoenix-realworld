@@ -162,6 +162,7 @@ defmodule RealWorld.Blog do
 
   def create_new_comments_for_article_slug(slug, attrs \\ %{}) do
     case Repo.get_by(Article, slug: slug) do
+      nil -> {:error, :not_found}
       article ->
         comment =
           article
@@ -169,12 +170,15 @@ defmodule RealWorld.Blog do
           |> Comment.changeset(attrs)
           |> Repo.insert!()
           {:ok, comment}
-      nil -> {:error, :not_found}
     end
   end
 
   def delete_comment(id) do
-    comment = Repo.get! Comment, id
-    Repo.delete(comment)
+    case Repo.get(Comment, id) do
+      nil -> {:error, :not_found}
+      comment ->
+        Repo.delete(comment)
+        :ok
+    end
   end
 end
