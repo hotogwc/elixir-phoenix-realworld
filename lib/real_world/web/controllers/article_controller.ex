@@ -42,4 +42,20 @@ defmodule RealWorld.Web.ArticleController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def favorite(conn, %{"article_slug" => slug}, user, _) do
+    with {:ok, article} <- Blog.favorite_article_with_slug(slug, user) do
+      conn
+      |> put_status(:created)
+      |> render("show.json", article: article)
+    end
+  end
+
+  def unfavorite(conn, %{"article_slug" => slug}, user, _) do
+    with {:ok, article} <- Blog.unfavorte_article_with_slug(slug, user) do
+      conn
+      |> put_status(200)
+      |> render("show.json", article: article)
+    end
+  end
 end

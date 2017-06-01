@@ -43,4 +43,10 @@ defmodule RealWorld.Accounts.Users do
     end
   end
 
+  def is_favorite?(slug, user) do
+    with article <- Repo.get_by!(RealWorld.Blog.Article, slug: slug) do
+        relation = Repo.get_by(RealWorld.ArticleFavorite, user_id: user.id, article_id: article.id)
+        relation != nil
+    end
+  end
 end

@@ -10,9 +10,10 @@ defmodule RealWorld.Blog.Article do
     field :description, :string
     field :title, :string
     field :slug, :string
+    field :favorited, :boolean, virtual: true
     belongs_to :author, RealWorld.Accounts.User, foreign_key: :user_id 
     has_many :comments, RealWorld.Blog.Comment
-
+    many_to_many :likers, RealWorld.Accounts.User, join_through: RealWorld.ArticleFavorite
 
     timestamps inserted_at: :created_at
   end

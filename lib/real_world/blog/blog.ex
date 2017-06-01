@@ -8,6 +8,7 @@ defmodule RealWorld.Blog do
   import Ecto
 
   alias RealWorld.Blog.{Article, Comment}
+  alias RealWorld.ArticleFavorite
 
   @doc """
   Returns the list of articles.
@@ -179,6 +180,26 @@ defmodule RealWorld.Blog do
       comment ->
         Repo.delete(comment)
         :ok
+    end
+  end
+
+
+  ##favorite and unfavorite
+  def favorite_article_with_slug(slug, user) do
+    with article = Repo.get_by!(Article, slug: slug),
+         changeset = ArticleFavorite.changeset(%ArticleFavorite{}, %{user_id: user.id, article_id: article.id}),
+         Repo.insert(changeset) do
+           article = Repo.preload article, :author
+           {:ok, article}
+    end
+  end
+
+  def unfavorte_article_with_slug(slug, user) do
+    with article = Repo.get_by!(Article, slug: slug),
+         relation = Repo.get_by!(ArticleFavorite, article_id: article.id, user_id: user.id),
+         Repo.delete(relation) do
+           article = Repo.preload article, :author
+           {:ok, article}
     end
   end
 end
